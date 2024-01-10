@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Player.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">fishRoad</a> &gt; <a href="index.source.html" class="el_package">com.groupNine.app</a> &gt; <span class="el_source">Player.java</span></div><h1>Player.java</h1><pre class="source lang-java linenums">package com.groupNine.app;
+
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.Objects;
+
+/**
+ * Sets up the player for the user to control and use
+ * to win the game
+ * @author Milo
+ * @version 1.0
+ * @see com.groupNine.app.Moving
+ */
+public class Player extends Moving {
+
+    /**
+     * Used to access other classes
+     */
+    private gameWindow gameWin;
+    /**
+     * Used to get the input of the user
+     */
+    private handleInput inpHandler;
+    /**
+     * The current score of the player
+     */
+    private int score;
+    /**
+     * The time that the game started
+     */
+    private long startTime;
+
+    /**
+     * Initializes variables for the class
+     * @param gameWin The gameWindow of the game
+     * @param inpHandler The handler for the input
+     */
+<span class="fc" id="L40">    public Player(gameWindow gameWin, handleInput inpHandler) {</span>
+<span class="fc" id="L41">        this.gameWin = gameWin;</span>
+<span class="fc" id="L42">        this.inpHandler = inpHandler;</span>
+<span class="fc" id="L43">        this.score = 0;</span>
+<span class="fc" id="L44">        setDefaultValues();</span>
+<span class="fc" id="L45">        getPlayerImage();</span>
+<span class="fc" id="L46">    }</span>
+
+    /**
+     * Changes the present score of the player
+     * @param change The amount of score to increase or decrease
+     */
+    public void changeScore(int change) {
+<span class="fc" id="L53">        this.score += change;</span>
+<span class="fc" id="L54">    }</span>
+
+    /**
+     * Sets the spawning location and beginning score of the player.
+     * Also records the initial time that the player class was called
+     */
+    public void setDefaultValues() {
+<span class="fc" id="L61">        this.xGrid = 2;</span>
+<span class="fc" id="L62">        this.yGrid = 2;</span>
+<span class="fc" id="L63">        this.score = 50;</span>
+<span class="fc" id="L64">        this.direction = &quot;right&quot;;</span>
+<span class="fc" id="L65">        this.startTime = System.currentTimeMillis();</span>
+<span class="fc" id="L66">    }</span>
+
+    /**
+     * Sets all of the images that the player will use to
+     * portray movement
+     */
+    public void getPlayerImage() {
+        try {
+<span class="fc" id="L74">            this.upOne = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream(&quot;/player/fish-up.png&quot;)));</span>
+<span class="fc" id="L75">            this.downOne = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream(&quot;/player/fish-down.png&quot;)));</span>
+<span class="fc" id="L76">            this.leftOne = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream(&quot;/player/fish-left.png&quot;)));</span>
+<span class="fc" id="L77">            this.rightOne = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream(&quot;/player/fish-right.png&quot;)));</span>
+
+<span class="fc" id="L79">            this.upTwo = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream(&quot;/player/fish-up1.png&quot;)));</span>
+<span class="fc" id="L80">            this.downTwo = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream(&quot;/player/fish-down1.png&quot;)));</span>
+<span class="fc" id="L81">            this.leftTwo = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream(&quot;/player/fish-left1.png&quot;)));</span>
+<span class="fc" id="L82">            this.rightTwo = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream(&quot;/player/fish-right1.png&quot;)));</span>
+
+<span class="nc" id="L84">        } catch (IOException e) {</span>
+<span class="nc" id="L85">            e.printStackTrace();</span>
+<span class="fc" id="L86">        }</span>
+<span class="fc" id="L87">    }</span>
+
+    /**
+     * Checks for any collision with rewards, special rewards, and punishments
+     * @param dir Direction player will be moving
+     */
+    public void collisionHandler(String dir){
+        // Initialize the variables for checking future collisions
+<span class="fc" id="L95">        int xDir = 0;</span>
+<span class="fc" id="L96">        int yDir = 0;</span>
+        // Set the direction of the future movement
+<span class="fc bfc" id="L98" title="All 4 branches covered.">        switch (dir) {</span>
+            case &quot;up&quot;:
+<span class="fc" id="L100">                yDir = -1;</span>
+<span class="fc" id="L101">                break;</span>
+            case &quot;down&quot;:
+<span class="fc" id="L103">                yDir = 1;</span>
+<span class="fc" id="L104">                break;</span>
+            case &quot;left&quot;:
+<span class="fc" id="L106">                xDir = -1;</span>
+<span class="fc" id="L107">                break;</span>
+            default:  // Right
+<span class="fc" id="L109">                xDir = 1;</span>
+                break;
+        }
+        // Check for any collision with rewards
+<span class="fc bfc" id="L113" title="All 2 branches covered.">        if (gameWin.map.getTheMap()[this.xGrid+xDir][this.yGrid+yDir] == 2){</span>
+<span class="fc" id="L114">            this.changeScore(gameWin.rewardmanage.claimReward(this.xGrid+xDir, this.yGrid+yDir));</span>
+        }
+        // Check if player is on top of special reward
+<span class="fc bfc" id="L117" title="All 2 branches covered.">        else if (gameWin.map.getTheMap()[this.xGrid+xDir][this.yGrid+yDir] == 3){</span>
+<span class="fc" id="L118">            this.changeScore(gameWin.specReward.amount);</span>
+            // Remove the special reward
+<span class="fc" id="L120">            gameWin.specReward.removeReward();</span>
+        }
+        // Check if player will be on top of punishment
+<span class="fc bfc" id="L123" title="All 2 branches covered.">        else if (gameWin.map.getTheMap()[this.xGrid+xDir][this.yGrid+yDir] == 4){</span>
+<span class="fc" id="L124">            this.changeScore(gameWin.punishmentList.punishmentArrayList.get(0).getDamage());</span>
+            // Remove the punishment
+<span class="pc bpc" id="L126" title="1 of 2 branches missed.">            for (int i = 0; i&lt;gameWin.punishmentList.punishmentArrayList.size(); i++) {</span>
+<span class="pc bpc" id="L127" title="2 of 4 branches missed.">                if (gameWin.punishmentList.punishmentArrayList.get(i).xGrid == this.xGrid+xDir &amp;&amp; gameWin.punishmentList.punishmentArrayList.get(i).yGrid == this.yGrid+yDir) {</span>
+<span class="fc" id="L128">                    gameWin.punishmentList.punishmentArrayList.remove(i);</span>
+<span class="fc" id="L129">                    break;</span>
+                }
+            }
+        }
+<span class="fc" id="L133">    }</span>
+
+    /**
+     * Checks for input from inputHandler, moves the player in that direction,
+     * and change the image of the player if needed
+     */
+    public void update() {
+        // Set the direction of movement, call function to check for collisions, move the player
+<span class="fc bfc" id="L141" title="All 8 branches covered.">        if (inpHandler.isUp() || inpHandler.isRight() || inpHandler.isLeft() || inpHandler.isDown()) {</span>
+<span class="pc bpc" id="L142" title="1 of 4 branches missed.">            if (inpHandler.isUp() &amp;&amp; gameWin.map.getTheMap()[this.xGrid][this.yGrid-1] != -1) {</span>
+<span class="fc" id="L143">                direction = &quot;up&quot;;</span>
+<span class="fc" id="L144">                collisionHandler(direction);</span>
+<span class="fc" id="L145">                this.yGrid -= 1;</span>
+<span class="pc bpc" id="L146" title="1 of 4 branches missed.">            } else if (inpHandler.isDown() &amp;&amp; gameWin.map.getTheMap()[this.xGrid][this.yGrid+1] != -1) {</span>
+<span class="fc" id="L147">                direction = &quot;down&quot;;</span>
+<span class="fc" id="L148">                collisionHandler(direction);</span>
+<span class="fc" id="L149">                this.yGrid += 1;</span>
+<span class="pc bpc" id="L150" title="1 of 4 branches missed.">            } else if (inpHandler.isLeft() &amp;&amp; gameWin.map.getTheMap()[this.xGrid-1][this.yGrid] != -1) {</span>
+<span class="fc" id="L151">                direction = &quot;left&quot;;</span>
+<span class="fc" id="L152">                collisionHandler(direction);</span>
+<span class="fc" id="L153">                this.xGrid -= 1;</span>
+<span class="pc bpc" id="L154" title="2 of 4 branches missed.">            } else if (inpHandler.isRight() &amp;&amp; gameWin.map.getTheMap()[this.xGrid+1][this.yGrid] != -1) {</span>
+<span class="fc" id="L155">                direction = &quot;right&quot;;</span>
+<span class="fc" id="L156">                collisionHandler(direction);</span>
+<span class="fc" id="L157">                this.xGrid += 1;</span>
+            }
+            // Change the position of the player on the grid
+<span class="fc" id="L160">            gameWin.map.setPlayerPosition(xGrid,yGrid);</span>
+            // Change the sprite to make it visually move
+<span class="fc" id="L162">            spriteCounter++;</span>
+<span class="pc bpc" id="L163" title="1 of 2 branches missed.">            if (spriteCounter &gt; 10) {</span>
+<span class="nc bnc" id="L164" title="All 2 branches missed.">                if (spriteNum == 1) {</span>
+<span class="nc" id="L165">                    spriteNum = 2;</span>
+                } else {
+<span class="nc" id="L167">                    spriteNum = 1;</span>
+                }
+<span class="nc" id="L169">                spriteCounter = 0;</span>
+            }
+        }
+<span class="fc" id="L172">    }</span>
+
+    /**
+     * Gets the present score of the player
+     * @return score
+     */
+    public int getScore() {
+<span class="fc" id="L179">        return score;</span>
+    }
+
+    /**
+     * Draws the player onto the screen
+     * @param graphics Used to draw onto the screen
+     */
+    public void draw(Graphics2D graphics) {
+<span class="nc" id="L187">        BufferedImage image = null;</span>
+<span class="nc bnc" id="L188" title="All 5 branches missed.">        switch(direction) {</span>
+            case &quot;up&quot;:
+<span class="nc bnc" id="L190" title="All 2 branches missed.">                if (spriteNum == 1) {</span>
+<span class="nc" id="L191">                    image = upTwo;</span>
+                }
+<span class="nc bnc" id="L193" title="All 2 branches missed.">                else if (spriteNum == 2){</span>
+<span class="nc" id="L194">                    image = upOne;</span>
+                }
+                break;
+            case &quot;down&quot;:
+<span class="nc bnc" id="L198" title="All 2 branches missed.">                if (spriteNum == 1) {</span>
+<span class="nc" id="L199">                    image = downTwo;</span>
+                }
+<span class="nc bnc" id="L201" title="All 2 branches missed.">                else if (spriteNum == 2){</span>
+<span class="nc" id="L202">                    image = downOne;</span>
+                }
+                break;
+            case &quot;left&quot;:
+<span class="nc bnc" id="L206" title="All 2 branches missed.">                if (spriteNum == 1) {</span>
+<span class="nc" id="L207">                    image = leftTwo;</span>
+                }
+<span class="nc bnc" id="L209" title="All 2 branches missed.">                else if (spriteNum == 2){</span>
+<span class="nc" id="L210">                    image = leftOne;</span>
+                }
+                break;
+            case &quot;right&quot;:
+<span class="nc bnc" id="L214" title="All 2 branches missed.">                if (spriteNum == 1) {</span>
+<span class="nc" id="L215">                    image = rightTwo;</span>
+                }
+<span class="nc bnc" id="L217" title="All 2 branches missed.">                else if (spriteNum == 2){</span>
+<span class="nc" id="L218">                    image = rightOne;</span>
+                }
+<span class="nc bnc" id="L220" title="All 2 branches missed.">                if (firstTime){</span>
+<span class="nc" id="L221">                    image = rightOne;</span>
+<span class="nc" id="L222">                    firstTime = false;</span>
+                }
+                break;
+        }
+
+<span class="nc" id="L227">        graphics.drawImage(image, this.xGrid*gameWin.tileSize, this.yGrid*gameWin.tileSize, gameWin.tileSize, gameWin.tileSize, null);</span>
+<span class="nc" id="L228">        String scoreString = &quot;Score: &quot; + this.score;</span>
+<span class="nc" id="L229">        graphics.setFont(new Font(&quot;Serif&quot;, Font.BOLD, 30));</span>
+<span class="nc" id="L230">        graphics.drawString(scoreString, 40, gameWin.screenHeight- 40);</span>
+<span class="nc" id="L231">        String timePast = &quot;Time: &quot; + ((int) Math.floor(System.currentTimeMillis()-startTime) / 1000);</span>
+<span class="nc" id="L232">        graphics.drawString(timePast, gameWin.screenWidth-130, gameWin.screenHeight- 40);</span>
+<span class="nc" id="L233">    }</span>
+
+    /**
+     * Checks if the player is touching the ending
+     * @return True if player touches the ending, False otherwise
+     */
+    public boolean touchingEndCell() {
+<span class="nc bnc" id="L240" title="All 2 branches missed.">        if (gameWin.endCell.isShowEnding()) {</span>
+<span class="nc bnc" id="L241" title="All 4 branches missed.">            return gameWin.endCell.getxGrid() == this.xGrid &amp;&amp; gameWin.endCell.getyGrid() == this.yGrid;</span>
+        }
+<span class="nc" id="L243">        return false;</span>
+    }
+
+    /**
+     * Calculates the total amount of time spent using the startTime
+     * @return Total amount of time spent
+     */
+    public int getTime() {
+<span class="fc" id="L251">        return ((int) Math.floor(System.currentTimeMillis()-startTime) / 1000);</span>
+    }
+
+    /**
+     * Modifier to change the initial start time of the player
+     * @param newTime New value to set the time to
+     */
+    public void changeTime(int newTime) {
+<span class="fc" id="L259">        this.startTime = newTime;</span>
+<span class="fc" id="L260">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

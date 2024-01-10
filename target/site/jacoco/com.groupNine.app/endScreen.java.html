@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>endScreen.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">fishRoad</a> &gt; <a href="index.source.html" class="el_package">com.groupNine.app</a> &gt; <span class="el_source">endScreen.java</span></div><h1>endScreen.java</h1><pre class="source lang-java linenums">package com.groupNine.app;
+
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+
+/**
+ * Displays an ending screen which changes based on
+ * whether the user wins or loses
+ * @author Ian
+ * @version 1.0
+ */
+public class endScreen {
+    private gameWindow gameWin;
+    /**
+     * Holds the state of the game
+     */
+    private boolean winLoseState;
+    /**
+     * Ensures we only use the setWinLoseState function once
+     */
+    private boolean firstTime;
+    /**
+     * Stores the time that the player took to finish
+     * the game
+     */
+    private double endTime;
+    /**
+     * Holds the image for the background of the ending screen
+     */
+    private BufferedImage image;
+
+    /**
+     * Saves the gameWindow and also sets the background image of the end screen
+     * @param gameWin The gameWindow of the game
+     */
+<span class="fc" id="L38">    public endScreen(gameWindow gameWin) {</span>
+<span class="fc" id="L39">        this.gameWin = gameWin;</span>
+<span class="fc" id="L40">        this.firstTime = true;</span>
+        try {
+<span class="fc" id="L42">            this.image = ImageIO.read(getClass().getResourceAsStream(&quot;/background/backdrop.png&quot;));</span>
+        }
+<span class="nc" id="L44">        catch(IOException e) {</span>
+<span class="nc" id="L45">            e.printStackTrace();</span>
+<span class="fc" id="L46">        }</span>
+<span class="fc" id="L47">    }</span>
+
+    /**
+     * Gets the result of the game and the time the player
+     * spent playing
+     * @param result The result of either a win or lose
+     */
+    public void setWinLoseState(boolean result) {
+<span class="pc bpc" id="L55" title="1 of 2 branches missed.">        if (firstTime == true){</span>
+<span class="fc" id="L56">            winLoseState = result;</span>
+<span class="pc bpc" id="L57" title="1 of 2 branches missed.">            if (gameWin != null){</span>
+<span class="fc bfc" id="L58" title="All 2 branches covered.">                if (gameWin.player != null){</span>
+<span class="fc" id="L59">                    this.endTime = gameWin.player.getTime();</span>
+                }
+            }
+<span class="fc" id="L62">            firstTime = false;</span>
+        }
+<span class="fc" id="L64">    }</span>
+
+    /**
+     * Illustrates either the victory or loss screen depending on
+     * the result of the game
+     * @param graphic Used to draw on the screen
+     */
+    public void draw(Graphics2D graphic) {
+        // Resulting Screen for Winning
+<span class="nc bnc" id="L73" title="All 2 branches missed.">        if (winLoseState == true) {</span>
+<span class="nc" id="L74">            graphic.drawImage( image, 0, 0,Color.white , null);</span>
+<span class="nc" id="L75">            graphic.setColor(Color.lightGray);</span>
+<span class="nc" id="L76">            graphic.setFont(new Font(&quot;Serif&quot;, Font.PLAIN, 90));</span>
+<span class="nc" id="L77">            graphic.drawString(&quot;Victory&quot;, (gameWin.screenWidth / 2) - 130, (gameWin.screenHeight / 2) - 100);</span>
+<span class="nc" id="L78">            graphic.setColor(Color.lightGray);</span>
+<span class="nc" id="L79">            graphic.setFont(new Font(&quot;Serif&quot;, Font.PLAIN, 30));</span>
+
+<span class="nc" id="L81">            String credits = &quot;Score: &quot; + gameWin.player.getScore() + &quot; | Time: &quot; + endTime;</span>
+
+<span class="nc" id="L83">            graphic.drawString(credits, (gameWin.screenWidth / 2) - 150, (gameWin.screenHeight / 2) + 200);</span>
+<span class="nc" id="L84">        }</span>
+        // Resulting Screen for Losing
+        else {
+<span class="nc" id="L87">            graphic.drawImage( image, 0, 0,Color.white , null);</span>
+<span class="nc" id="L88">            graphic.setColor(Color.lightGray);</span>
+<span class="nc" id="L89">            graphic.setFont(new Font(&quot;Serif&quot;, Font.PLAIN, 90));</span>
+<span class="nc" id="L90">            graphic.drawString(&quot;Defeat&quot;, (gameWin.screenWidth / 2) - 130, (gameWin.screenHeight / 2) - 100);</span>
+        }
+<span class="nc" id="L92">    }</span>
+
+    /**
+     * Getter for ending state of game
+     * @return Boolean value of game state
+     */
+    public boolean isWinLoseState() {
+<span class="fc" id="L99">        return winLoseState;</span>
+    }
+
+    /**
+     * Getter for if first time
+     * @return Boolean value of first time
+     */
+    public boolean isFirstTime() {
+<span class="fc" id="L107">        return firstTime;</span>
+    }
+
+    /**
+     * Getter for time the game ended
+     * @return double value for time of game's ending
+     */
+    public double getEndTime() {
+<span class="fc" id="L115">        return endTime;</span>
+    }
+
+    /**
+     * Getter for the image of the screen
+     * @return BufferedImage of the image
+     */
+    public BufferedImage getImage() {
+<span class="fc" id="L123">        return image;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

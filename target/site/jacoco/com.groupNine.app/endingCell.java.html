@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>endingCell.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">fishRoad</a> &gt; <a href="index.source.html" class="el_package">com.groupNine.app</a> &gt; <span class="el_source">endingCell.java</span></div><h1>endingCell.java</h1><pre class="source lang-java linenums">package com.groupNine.app;
+
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+
+/**
+ * Sets up the ending portal for the player after
+ * the collection all the regular reward
+ * @author Alice
+ * @version 1.0
+ * @see com.groupNine.app.Entity
+ */
+public class endingCell extends Entity{
+    private gameWindow gameWin;
+    /**
+     * Holds the image of the ending cell
+     */
+    private BufferedImage image;
+    /**
+     * Determines if the ending cell should show itself on the screen
+     */
+    private boolean showEnding;
+
+    /**
+     * initialize the showEnding to be false, and store the endingPortal image to this image *** need update ***
+     * @param gameWin input the game Window of the game
+     */
+<span class="fc" id="L30">    public endingCell(gameWindow gameWin) {</span>
+<span class="fc" id="L31">        this.gameWin = gameWin;</span>
+<span class="fc" id="L32">        this.showEnding = false;</span>
+        try {
+<span class="fc" id="L34">            image = ImageIO.read(getClass().getResourceAsStream(&quot;/endingPortal/portal.png&quot;));</span>
+        }
+<span class="nc" id="L36">        catch(IOException e) {</span>
+<span class="nc" id="L37">            e.printStackTrace();</span>
+<span class="fc" id="L38">        }</span>
+<span class="fc" id="L39">    }</span>
+
+    /**
+     * This method is to set up the position of the ending portal after all regular rewards are collected by the player,
+     * and assign showEnding to be true
+     */
+    public void setUpEndingCell() {
+<span class="fc" id="L46">        this.xGrid = 14;</span>
+<span class="fc" id="L47">        this.yGrid = 9;</span>
+<span class="fc" id="L48">        this.showEnding = true;</span>
+<span class="fc" id="L49">    }</span>
+
+    /**
+     * Gets the private variable image
+     * @return BufferedImage
+     */
+    public BufferedImage getImage() {
+<span class="fc" id="L56">        return this.image;</span>
+    }
+
+    /**
+     * This method checks if the ending portal is being show or not
+     * @return the values true or false for the showEnding boolean variable
+     */
+    public boolean isShowEnding() {
+<span class="fc" id="L64">        return showEnding;</span>
+    }
+
+    /**
+     * This method draw the ending portal on the game window
+     * @param graphic the graphical display on the game window
+     */
+    public void draw(Graphics2D graphic) {
+<span class="nc" id="L72">        graphic.drawImage(image, this.xGrid*gameWin.tileSize, this.yGrid*gameWin.tileSize, gameWin.tileSize, gameWin.tileSize, null);</span>
+<span class="nc" id="L73">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>gameWindow.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">fishRoad</a> &gt; <a href="index.source.html" class="el_package">com.groupNine.app</a> &gt; <span class="el_source">gameWindow.java</span></div><h1>gameWindow.java</h1><pre class="source lang-java linenums">package com.groupNine.app;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Random;
+
+/**
+ * Instantiates and keeps the game functional
+ * @author Ian
+ * @version 1.1
+ * @see javax.swing.JPanel
+ * @see java.lang.Runnable
+ */
+public class gameWindow extends JPanel implements Runnable {
+
+    // Settings for the screen
+    /**
+     * 16 pixels x pixels for all objects in the game.
+     */
+<span class="fc" id="L22">    int orgTileSize = 16; // 16 pixels by 16 pixels</span>
+    /**
+     * Scaling factor for high resolutions. Objects will now become 64 pixels x 64 pixels
+     */
+<span class="fc" id="L26">    int scale = 4;</span>
+    /**
+     * Each tile contains 64 pixels x 64 pixels
+     */
+<span class="fc" id="L30">    int tileSize = orgTileSize * scale; // Amount of tiles able to be displayed</span>
+    /**
+     * Game screen will contain 16 tiles horizontally.
+     */
+<span class="fc" id="L34">    int maxScreenCol = 16; // x</span>
+    /**
+     * Game screen will contain 12 tiles vertically.
+     */
+<span class="fc" id="L38">    int maxScreenRow = 12; // y</span>
+    /**
+     * 64 pixels * 16 columns = 1024 pixels
+     */
+<span class="fc" id="L42">    int screenWidth = tileSize * maxScreenCol;</span>
+    /**
+     * 64 pixels * 12 rows = 768 pixels
+     */
+<span class="fc" id="L46">    int screenHeight = tileSize * maxScreenRow;</span>
+
+    /**
+     * Boolean value to track the status of the game (Playing, or ended)
+     */
+<span class="fc" id="L51">    public volatile boolean gameEnd = false;</span>
+    /**
+     * Boolean value to track the result of the game. (win, or lose)
+     */
+<span class="fc" id="L55">    public volatile boolean gameWinLose = false;</span>
+    /**
+     * Handles which key has been pressed for movement
+     */
+    handleInput inpHandler;
+    /**
+     * Thread constructor for run method.
+     */
+    public Thread gameThread;
+
+    /**
+     * FPS; the number of the screen is updated.
+     */
+<span class="fc" id="L68">    int FPS = 5;</span>
+
+    /**
+     * The frame that the gameWindow is placed in
+     */
+    JFrame window;
+    /**
+     * Variable to hold itself
+     */
+    gameWindow gameWin;
+
+    /**
+     * Action to happen when the special reward is spawned
+     */
+    ActionListener spawnSpecialReward;
+    /**
+     * Action to happen to remove the special reward from the screen
+     */
+    ActionListener removeSpecialReward;
+    /**
+     * Actino to happen when the game ends
+     */
+    ActionListener endTheGame;
+    /**
+     * Timer to calculate when to spawn in the special reward
+     */
+    Timer timer;
+    /**
+     * Timer to calculate when the special reward should be removed
+     */
+    Timer removeTimer;
+    /**
+     * Timer to see when the game over screen should be removed
+     */
+    Timer endScreenTimer;
+
+    /**
+     * Variable to hold all the walls
+     */
+    public wallManager walls;
+    /**
+     * Variable to hold the different position of object on the screen
+     */
+    public gameMap map;
+    /**
+     * Variable to hold all of the rewards
+     */
+    public rewardManager rewardmanage;
+    /**
+     * Variable to spawn in the special reward
+     */
+    public specialReward specReward;
+    /**
+     * Variable to hold the punishment list
+     */
+    public PunishmentList punishmentList;
+    /**
+     * Variable to hold the ending cell
+     */
+    public endingCell endCell;
+    /**
+     * Variable to hold the end screen
+     */
+    public endScreen screenEnd;
+    /**
+     * Variable to hold the player
+     */
+    public Player player;
+    /**
+     * Variable to hold the enemy
+     */
+    public Enemy enemy;
+
+    /**
+     * Constructor of the gameWindow class; sets up the settings of the game screen.
+     * @param window A JFrame object where we place JPanel objects.
+     */
+<span class="fc" id="L145">    public gameWindow(JFrame window) {</span>
+<span class="fc" id="L146">        this.setPreferredSize(new Dimension(screenWidth, screenHeight));</span>
+<span class="fc" id="L147">        this.setSize((new Dimension(screenWidth, screenHeight)));</span>
+<span class="fc" id="L148">        this.setBackground(Color.black); // Background color</span>
+<span class="fc" id="L149">        this.setDoubleBuffered(true); // Increases rendering performance</span>
+<span class="fc" id="L150">        this.setFocusable(true);</span>
+<span class="fc" id="L151">        this.window = window;</span>
+<span class="fc" id="L152">        gameWin = this;</span>
+<span class="fc" id="L153">    }</span>
+
+    /**
+     * Starts the thread.
+     */
+    public void startGameThread() {
+<span class="fc" id="L159">        gameThread = new Thread(this);</span>
+<span class="fc" id="L160">        gameThread.start();</span>
+<span class="fc" id="L161">    }</span>
+
+    /**
+     * The end screen is displayed, regardless of the result of the game
+     */
+    public void playerWinLose() {
+<span class="fc" id="L167">        gameEnd = true;</span>
+<span class="fc" id="L168">        endScreenTimer = new Timer(10000, endTheGame);</span>
+<span class="fc" id="L169">        endScreenTimer.start();</span>
+<span class="fc" id="L170">        repaint();</span>
+<span class="fc" id="L171">    }</span>
+
+    /**
+     * Starts the game
+     */
+    public void startGameStage() {
+<span class="fc" id="L177">        double drawInterval = 1000000000 / FPS;</span>
+<span class="fc" id="L178">        double delta = 0;</span>
+<span class="fc" id="L179">        long lastTime = System.nanoTime();</span>
+        long currTime;
+
+        // Game loop
+<span class="fc bfc" id="L183" title="All 2 branches covered.">        while (gameThread != null) {</span>
+            // Ensure the game does not run too fast
+<span class="fc" id="L185">            currTime = System.nanoTime();</span>
+<span class="fc" id="L186">            delta += (currTime - lastTime) / drawInterval;</span>
+<span class="fc" id="L187">            lastTime = currTime;</span>
+
+<span class="fc bfc" id="L189" title="All 2 branches covered.">            if (delta &gt;= 1) {</span>
+<span class="fc" id="L190">                delta--;</span>
+                // Check for player score above 0
+<span class="pc bpc" id="L192" title="1 of 2 branches missed.">                if (player.getScore() &lt; 0) {</span>
+                    // Lose
+<span class="nc" id="L194">                    playerWinLose();</span>
+                }
+                // Check if enemy touches player
+<span class="pc bpc" id="L197" title="1 of 2 branches missed.">                else if (enemy.isTouchedPlayer()) {</span>
+                    // Lose
+<span class="nc" id="L199">                    playerWinLose();</span>
+                }
+                else {
+
+                    // Check if all rewards are collected
+<span class="pc bpc" id="L204" title="1 of 2 branches missed.">                    if (rewardmanage.rewardList.size() == 0) {</span>
+                        // Spawn ending cell
+<span class="nc" id="L206">                        endCell.setUpEndingCell();</span>
+<span class="nc bnc" id="L207" title="All 2 branches missed.">                        if (player.touchingEndCell()){ // Player is now touching the end cell</span>
+                            // End game
+<span class="nc" id="L209">                            gameWinLose = true;</span>
+<span class="nc" id="L210">                            playerWinLose();</span>
+                        }
+                        else {
+                            // Update information
+<span class="nc" id="L214">                            update();</span>
+                            // Draw screen with updated information
+<span class="nc" id="L216">                            repaint();</span>
+                        }
+                    }
+                    else {
+                        // Update information
+<span class="fc" id="L221">                        update();</span>
+                        // Draw screen with updated information
+<span class="fc" id="L223">                        repaint();</span>
+                    }
+                }
+
+
+<span class="fc" id="L228">                gameWin.requestFocus();</span>
+            }
+        }
+<span class="fc" id="L231">    }</span>
+
+    /**
+     * Initalizes all of the variables needed for the game loop to function.
+     * Creates timers for special rewards.
+     */
+    public void run() {
+<span class="fc" id="L238">        gameWin.setFocusable(true);</span>
+<span class="fc" id="L239">        gameWin.requestFocus();</span>
+<span class="fc" id="L240">        inpHandler = new handleInput();</span>
+<span class="fc" id="L241">        gameWin.addKeyListener(inpHandler);</span>
+
+        // Initializing the variables for the game
+<span class="fc" id="L244">        map = new gameMap(gameWin);</span>
+<span class="fc" id="L245">        walls = new wallManager(gameWin);</span>
+<span class="fc" id="L246">        rewardmanage = new rewardManager(gameWin);</span>
+<span class="fc" id="L247">        specReward = new specialReward(gameWin);</span>
+<span class="fc" id="L248">        punishmentList = new PunishmentList(gameWin);</span>
+<span class="fc" id="L249">        endCell = new endingCell(gameWin);</span>
+<span class="fc" id="L250">        player = new Player(gameWin, inpHandler);</span>
+<span class="fc" id="L251">        enemy = new Enemy(gameWin);</span>
+
+        // Initializing the Timer and Listener
+<span class="fc" id="L254">        removeSpecialReward = new ActionListener() {</span>
+            @Override
+            public void actionPerformed(ActionEvent e) {
+<span class="nc" id="L257">                specReward.removeReward();</span>
+<span class="nc" id="L258">                removeTimer.stop();</span>
+<span class="nc" id="L259">            }</span>
+        };
+<span class="fc" id="L261">        spawnSpecialReward = new ActionListener() {</span>
+            @Override
+            public void actionPerformed(ActionEvent e) {
+<span class="nc" id="L264">                specReward.initiateSpawn();</span>
+<span class="nc" id="L265">                removeTimer = new Timer(4000, removeSpecialReward); // Delete the special reward in 4000ms</span>
+<span class="nc" id="L266">                removeTimer.start();</span>
+<span class="nc" id="L267">                timer.stop();</span>
+<span class="nc" id="L268">            }</span>
+        };
+<span class="fc" id="L270">        endTheGame = new ActionListener() {</span>
+            @Override
+            public void actionPerformed(ActionEvent e) {
+<span class="nc" id="L273">                repaint();</span>
+<span class="nc" id="L274">                gameWin.setVisible(false);</span>
+<span class="nc" id="L275">                gameThread.stop();</span>
+<span class="nc" id="L276">                endScreenTimer.stop();</span>
+<span class="nc" id="L277">            }</span>
+        };
+
+        // Randomly spawn the reward
+<span class="fc" id="L281">        Random rand = new Random();</span>
+<span class="fc" id="L282">        int randTime = (rand.nextInt(20) + 5) * 1000;</span>
+<span class="fc" id="L283">        timer = new Timer(randTime, spawnSpecialReward); // Waits 5000ms to spawn reward</span>
+<span class="fc" id="L284">        timer.start();</span>
+
+<span class="fc" id="L286">        screenEnd = new endScreen(gameWin);</span>
+
+<span class="fc" id="L288">        startGameStage();</span>
+<span class="fc" id="L289">    }</span>
+
+    /**
+     * Constantly ensure the player and enemy are being called every tick
+     */
+    public void update() {
+<span class="pc bpc" id="L295" title="1 of 2 branches missed.">        if (player != null){</span>
+<span class="fc" id="L296">            player.update();</span>
+        }
+<span class="pc bpc" id="L298" title="1 of 2 branches missed.">        if (enemy != null){</span>
+<span class="fc" id="L299">            enemy.update();</span>
+        }
+<span class="fc" id="L301">    }</span>
+
+    /**
+     * Draws the different entities onto the screen depending on the state of various objects
+     * @param g the &lt;code&gt;Graphics&lt;/code&gt; object to protect
+     */
+    public void paintComponent(Graphics g) {
+<span class="nc" id="L308">        super.paintComponent(g);</span>
+<span class="nc" id="L309">        Graphics2D graphic = (Graphics2D) g; // Sprite of main character</span>
+<span class="nc" id="L310">        graphic.setBackground(Color.white);</span>
+<span class="nc bnc" id="L311" title="All 2 branches missed.">        if (!gameEnd){</span>
+<span class="nc bnc" id="L312" title="All 2 branches missed.">            if (walls !=null){</span>
+<span class="nc" id="L313">                walls.draw(graphic);</span>
+            }
+<span class="nc bnc" id="L315" title="All 2 branches missed.">            if (rewardmanage != null){</span>
+<span class="nc" id="L316">                rewardmanage.draw(graphic);</span>
+            }
+<span class="nc bnc" id="L318" title="All 2 branches missed.">            if (specReward != null){</span>
+<span class="nc bnc" id="L319" title="All 2 branches missed.">                if (specReward.isCanSpawn()){</span>
+<span class="nc" id="L320">                    specReward.draw(graphic);</span>
+                }
+            }
+<span class="nc bnc" id="L323" title="All 2 branches missed.">            if (endCell != null){</span>
+<span class="nc bnc" id="L324" title="All 2 branches missed.">                if (endCell.isShowEnding()) {</span>
+<span class="nc" id="L325">                    endCell.draw(graphic);</span>
+                }
+            }
+<span class="nc bnc" id="L328" title="All 2 branches missed.">            if (punishmentList != null){</span>
+<span class="nc" id="L329">                punishmentList.draw(graphic);</span>
+            }
+<span class="nc bnc" id="L331" title="All 2 branches missed.">            if (player != null){</span>
+<span class="nc" id="L332">                player.draw(graphic);</span>
+            }
+<span class="nc bnc" id="L334" title="All 2 branches missed.">            if (enemy != null){</span>
+<span class="nc" id="L335">                enemy.draw(graphic);</span>
+            }
+        }
+        else {
+<span class="nc bnc" id="L339" title="All 2 branches missed.">            if(gameWinLose == true) { // Show win, score and time</span>
+<span class="nc" id="L340">                screenEnd.setWinLoseState(true);</span>
+<span class="nc" id="L341">                screenEnd.draw(graphic);</span>
+            }
+            else { // Show lose
+<span class="nc" id="L344">                screenEnd.setWinLoseState(false);</span>
+<span class="nc" id="L345">                screenEnd.draw(graphic);</span>
+            }
+        }
+
+<span class="nc" id="L349">        graphic.dispose(); // Helps save memory</span>
+
+<span class="nc" id="L351">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

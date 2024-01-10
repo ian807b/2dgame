@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PunishmentList.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">fishRoad</a> &gt; <a href="index.source.html" class="el_package">com.groupNine.app</a> &gt; <span class="el_source">PunishmentList.java</span></div><h1>PunishmentList.java</h1><pre class="source lang-java linenums">package com.groupNine.app;
+
+import java.awt.*;
+import java.util.ArrayList;
+
+/**
+ * Set up the punishments according to the game map
+ * @author Ian
+ * @version 1.0
+ */
+public class PunishmentList {
+    /**
+     * Stores all the visible punishments
+     */
+    public ArrayList&lt;Punishment&gt; punishmentArrayList;
+    private gameWindow gameWin;
+
+    /**
+     * Initialize this punishmentArrayList,
+     * assign the parameter gameWin to this gameWin,
+     * and call the setup method
+     * @param gameWin The gameWindow of the game
+     */
+<span class="fc" id="L24">    public PunishmentList(gameWindow gameWin) {</span>
+<span class="fc" id="L25">        this.punishmentArrayList = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L26">        this.gameWin = gameWin;</span>
+<span class="fc" id="L27">        setup();</span>
+<span class="fc" id="L28">    }</span>
+
+    /**
+     * This method go through the game map and store a punishment into
+     * punishmentArrayList wherever there is a punishment
+     */
+    private void setup() {
+<span class="fc bfc" id="L35" title="All 2 branches covered.">        for (int i = 0; i&lt;gameWin.map.getTheMap().length; i++) {</span>
+<span class="fc bfc" id="L36" title="All 2 branches covered.">            for(int k = 0; k&lt;gameWin.map.getTheMap()[0].length; k++) {</span>
+<span class="fc bfc" id="L37" title="All 2 branches covered.">                if (gameWin.map.getTheMap()[i][k] == 4) {</span>
+<span class="fc" id="L38">                    punishmentArrayList.add(new Punishment(gameWin, i, k));</span>
+                }
+            }
+        }
+<span class="fc" id="L42">    }</span>
+
+    /**
+     * This method draw the fishing hook on the game window according to the game map 2D array
+     * @param graphic the graphical display on the game window
+     */
+    public void draw(Graphics2D graphic) {
+<span class="nc bnc" id="L49" title="All 2 branches missed.">        for (int i = 0; i&lt;punishmentArrayList.size(); i++) {</span>
+<span class="nc" id="L50">            punishmentArrayList.get(i).draw(graphic);</span>
+        }
+<span class="nc" id="L52">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

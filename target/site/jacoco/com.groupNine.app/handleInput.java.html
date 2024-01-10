@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>handleInput.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">fishRoad</a> &gt; <a href="index.source.html" class="el_package">com.groupNine.app</a> &gt; <span class="el_source">handleInput.java</span></div><h1>handleInput.java</h1><pre class="source lang-java linenums">package com.groupNine.app;
+
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+/**
+ * HandleInput class implements the KeyListener interface for receiving keyboard events
+ * @author Milo
+ * @version 1.0
+ * @see java.awt.event.KeyListener
+ */
+<span class="fc" id="L11">public class handleInput implements KeyListener {</span>
+    /**
+     * Check if the up, down, left and right key is pressed
+     */
+    private boolean up, down, left, right;
+
+    /**
+     * Gets any key typed
+     * @param event the event to be processed
+     */
+    public void keyTyped(KeyEvent event) {
+<span class="nc" id="L22">        return;</span>
+    }
+
+    /**
+     * This method checks which key is pressed and assign true to the corresponding boolean type of that key
+     * @param event An event which indicates that a keystroke occurred
+     */
+    public void keyPressed(KeyEvent event) {
+<span class="fc" id="L30">        int code = event.getKeyCode();</span>
+
+<span class="fc bfc" id="L32" title="All 2 branches covered.">        if (code == KeyEvent.VK_UP) {</span>
+<span class="fc" id="L33">            up = true;</span>
+        }
+
+<span class="fc bfc" id="L36" title="All 2 branches covered.">        if (code == KeyEvent.VK_DOWN) {</span>
+<span class="fc" id="L37">            down = true;</span>
+        }
+
+<span class="fc bfc" id="L40" title="All 2 branches covered.">        if (code == KeyEvent.VK_LEFT) {</span>
+<span class="fc" id="L41">            left = true;</span>
+        }
+
+<span class="fc bfc" id="L44" title="All 2 branches covered.">        if (code == KeyEvent.VK_RIGHT) {</span>
+<span class="fc" id="L45">            right = true;</span>
+        }
+<span class="fc" id="L47">    }</span>
+
+    /**
+     * This method checks if the input key is released and assign false to the corresponding boolean type of that key
+     * @param event An event which indicates that a keystroke occurred
+     */
+    public void keyReleased(KeyEvent event) {
+
+<span class="fc" id="L55">        int code = event.getKeyCode();</span>
+
+<span class="fc bfc" id="L57" title="All 2 branches covered.">        if (code == KeyEvent.VK_UP) {</span>
+<span class="fc" id="L58">            up = false;</span>
+        }
+
+<span class="fc bfc" id="L61" title="All 2 branches covered.">        if (code == KeyEvent.VK_DOWN) {</span>
+<span class="fc" id="L62">            down = false;</span>
+        }
+
+<span class="fc bfc" id="L65" title="All 2 branches covered.">        if (code == KeyEvent.VK_LEFT) {</span>
+<span class="fc" id="L66">            left = false;</span>
+        }
+
+<span class="fc bfc" id="L69" title="All 2 branches covered.">        if (code == KeyEvent.VK_RIGHT) {</span>
+<span class="fc" id="L70">            right = false;</span>
+        }
+<span class="fc" id="L72">    }</span>
+
+    /**
+     * This method checks if the up key is being pressed or not
+     * @return the values true or false for the up key boolean variable
+     */
+    public boolean isUp() {
+<span class="fc" id="L79">        return this.up;</span>
+    }
+
+    /**
+     * This method checks if the down key is being pressed or not
+     * @return the values true or false for the down key boolean variable
+     */
+    public boolean isDown() {
+<span class="fc" id="L87">        return this.down;</span>
+    }
+
+    /**
+     * This method checks if the left key is being pressed or not
+     * @return the values true or false for the left key boolean variable
+     */
+    public boolean isLeft() {
+<span class="fc" id="L95">        return this.left;</span>
+    }
+
+    /**
+     * This method checks if the right key is being pressed or not
+     * @return the values true or false for the right key boolean variable
+     */
+    public boolean isRight() {
+<span class="fc" id="L103">        return this.right;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>rewardManager.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">fishRoad</a> &gt; <a href="index.source.html" class="el_package">com.groupNine.app</a> &gt; <span class="el_source">rewardManager.java</span></div><h1>rewardManager.java</h1><pre class="source lang-java linenums">package com.groupNine.app;
+
+import java.awt.*;
+import java.util.ArrayList;
+
+/**
+ * Places rewards and stores acquired reward points
+ * @author Parmida
+ * @version 1.0
+ */
+public class rewardManager {
+    /**
+     * Stores the regular awards into a list.
+     */
+    private gameWindow gameWin;
+    ArrayList&lt;regularReward&gt; rewardList;
+
+    /**
+     * Scans the positions of the regular rewards and stores the objects of the regular rewards into an array.
+     * @param gameWin gameWindow object to gain access to its variables.
+     */
+<span class="fc" id="L22">    public rewardManager(gameWindow gameWin) {</span>
+<span class="fc" id="L23">        this.gameWin = gameWin;</span>
+<span class="fc" id="L24">        rewardList = new ArrayList&lt;regularReward&gt;();</span>
+        // Save the regular rewards in a list to manage them later
+<span class="fc bfc" id="L26" title="All 2 branches covered.">        for (int i = 0; i&lt;gameWin.maxScreenCol; i++) {</span>
+<span class="fc bfc" id="L27" title="All 2 branches covered.">            for (int k = 0; k&lt;gameWin.maxScreenRow; k++) {</span>
+<span class="fc bfc" id="L28" title="All 2 branches covered.">                if (gameWin.map.getTheMap()[i][k] == 2) {</span>
+<span class="fc" id="L29">                    rewardList.add(new regularReward(gameWin, i, k));</span>
+                }
+
+            }
+        }
+<span class="fc" id="L34">    }</span>
+
+    /**
+     * Sums up the amount of the regular awards earned.
+     * @param tmpX X-coordinate
+     * @param tmpY Y-coordinate
+     * @return The total amount of the regular awards earned.
+     */
+    public int claimReward(int tmpX, int tmpY) {
+<span class="fc" id="L43">        int returnReward = 0;</span>
+<span class="fc bfc" id="L44" title="All 2 branches covered.">        for (int i = 0; i&lt;rewardList.size(); i++) {</span>
+<span class="fc bfc" id="L45" title="All 4 branches covered.">            if (rewardList.get(i).xGrid == tmpX &amp;&amp; rewardList.get(i).yGrid == tmpY){</span>
+<span class="fc" id="L46">                returnReward = rewardList.get(i).amount;</span>
+<span class="fc" id="L47">                rewardList.remove(i);</span>
+<span class="fc" id="L48">                break;</span>
+            }
+        }
+<span class="fc" id="L51">        return returnReward;</span>
+    }
+
+    /**
+     * Draws the regular awards at the coordinates stored in an array.
+     * @param graphics Graphics2D object to draw the regular awards onto the map.
+     */
+    public void draw(Graphics2D graphics) {
+<span class="nc bnc" id="L59" title="All 2 branches missed.">        for (int i = 0; i&lt;rewardList.size(); i++){</span>
+<span class="nc" id="L60">            rewardList.get(i).draw(graphics);</span>
+        }
+<span class="nc" id="L62">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>gameMap.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">fishRoad</a> &gt; <a href="index.source.html" class="el_package">com.groupNine.app</a> &gt; <span class="el_source">gameMap.java</span></div><h1>gameMap.java</h1><pre class="source lang-java linenums">package com.groupNine.app;
+
+import java.util.Arrays;
+
+/**
+ * Sets up the map that will be displayed on the screen and used for collision
+ * @author Ian
+ * @version 1.0
+ */
+public class gameMap {
+
+    private gameWindow gameWin;
+    /**
+     * Holds the objects that should be displayed in each grid.
+     * With -1 representing a barrier, 0 representing nothing, 1 representing the player,
+     * 2 representing a regular reward, 3 representing a special reward, and 4 representing a punishment.
+     */
+    private int[][] theMap;
+    /**
+     * Holds the player and enemy position.
+     * Player is denoted with 1, enemy is denoted with 2.
+     * The array is for checking and updating the player and enemy positions.
+     * Every other values, -1, 2, 3, and 4, from &quot;theMap&quot; are not needed here
+     * because they are checked by the collisionHandler and the Player classes.
+     */
+    private int[][] enemyPlayerMap;
+
+    /**
+     * Assign the parameter gameWin to this gameWin, and calls the mapInitializer method
+     * @param gameWin input the game Window of the game
+     */
+<span class="fc" id="L32">    public gameMap(gameWindow gameWin) {</span>
+<span class="fc" id="L33">        this.gameWin = gameWin;</span>
+<span class="fc" id="L34">        mapInitializer();</span>
+<span class="fc" id="L35">    }</span>
+
+    /**
+     * Creates a game map int 2D array template,
+     * and set up the enemyPlayerMap to hold the position of both the player and enemy
+     */
+    public void mapInitializer() {
+<span class="fc" id="L42">        theMap = new int[gameWin.maxScreenCol][gameWin.maxScreenRow];</span>
+<span class="fc" id="L43">        int[][] tmps = {</span>
+                {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,0},
+                {-1,0,0,0,0,0,0,2,0,0,-1,0},
+                {-1,0,0,-1,-1,-1,-1,-1,0,0,-1,0},
+                {-1,0,0,-1,0,0,4,-1,0,0,-1,0},
+                {-1,0,-1,-1,0,0,-1,0,2,0,-1,0},
+                {-1,0,-1,0,0,0,0,-1,0,0,-1,0},
+                {-1,0,-1,2,0,-1,0,0,-1,0,-1,0},
+                {-1,0,-1,0,0,0,0,0,0,0,-1,0},
+                {-1,0,-1,0,0,0,-1,-1,0,0,-1,0},
+                {-1,0,0,-1,0,0,0,0,0,0,-1,0},
+                {-1,0,0,4,0,0,0,4,0,-1,-1,0},
+                {-1,0,0,-1,0,0,-1,-1,-1,2,-1,0},
+                {-1,-1,0,-1,0,0,-1,0,0,0,-1,0},
+                {-1,0,0,-1,0,0,-1,0,0,0,-1,0},
+                {-1,0,2,-1,2,4,0,0,0,0,-1,0},
+                {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,0},
+        };
+<span class="fc" id="L61">        theMap = Arrays.stream(tmps).map(int[]::clone).toArray(int[][]::new);</span>
+<span class="fc" id="L62">        enemyPlayerMap = Arrays.stream(tmps).map(int[]::clone).toArray(int[][]::new);</span>
+        // Set the enemyPlayerMap
+<span class="fc bfc" id="L64" title="All 2 branches covered.">        for(int i = 0; i&lt; theMap.length; i++) {</span>
+<span class="fc bfc" id="L65" title="All 2 branches covered.">            for (int j = 0; j&lt; theMap[0].length; j++) {</span>
+<span class="pc bpc" id="L66" title="1 of 4 branches missed.">                if (theMap[i][j] == 2 || theMap[i][j] == 3) {</span>
+<span class="fc" id="L67">                    enemyPlayerMap[i][j] = 0;</span>
+                }
+            }
+        }
+
+<span class="fc" id="L72">    }</span>
+
+    /**
+     * Set the position of the special reward in the theMap
+     * @param x x coordinate of the special reward
+     * @param y y coordinate of the special reward
+     */
+    public void setSpecialReward(int x, int y) {
+<span class="fc" id="L80">        theMap[x][y] = 3;</span>
+<span class="fc" id="L81">    }</span>
+
+    /**
+     * Sets the position of the player in the theMap and the enemyPlayerMap
+     * Player is denoted with 1, enemy is denoted with 2
+     * @param x x coordinate of the player
+     * @param y y coordinate of the player
+     */
+    public void setPlayerPosition(int x, int y){
+<span class="fc bfc" id="L90" title="All 2 branches covered.">        for (int i = 0; i&lt;enemyPlayerMap.length; i++) {</span>
+<span class="fc bfc" id="L91" title="All 2 branches covered.">            for (int k = 0; k&lt;enemyPlayerMap[0].length; k++) {</span>
+<span class="fc bfc" id="L92" title="All 2 branches covered.">                if (enemyPlayerMap[i][k] == 1) {</span>
+<span class="fc" id="L93">                    enemyPlayerMap[i][k] = 0;</span>
+                }
+<span class="fc bfc" id="L95" title="All 2 branches covered.">                if (theMap[i][k] == 1) {</span>
+<span class="fc" id="L96">                    theMap[i][k] = 0;</span>
+                }
+            }
+        }
+<span class="fc" id="L100">        enemyPlayerMap[x][y] = 1;</span>
+<span class="fc" id="L101">        theMap[x][y] = 1;</span>
+<span class="fc" id="L102">    }</span>
+
+    /**
+     * Sets the position of the enemy in the theMap and the enemyPlayerMap
+     * Player is denoted with 1, enemy is denoted with 2
+     * @param x x coordinate of the enemy
+     * @param y y coordinate of the enemy
+     */
+    public void setEnemyPosition(int x, int y){
+<span class="fc bfc" id="L111" title="All 2 branches covered.">        for (int i = 0; i&lt;enemyPlayerMap.length; i++) {</span>
+<span class="fc bfc" id="L112" title="All 2 branches covered.">            for (int k = 0; k&lt;enemyPlayerMap[0].length; k++) {</span>
+<span class="fc bfc" id="L113" title="All 2 branches covered.">                if (enemyPlayerMap[i][k] == 2) {</span>
+<span class="fc" id="L114">                    enemyPlayerMap[i][k] = 0;</span>
+<span class="fc" id="L115">                    break;</span>
+                }
+            }
+        }
+<span class="fc" id="L119">        enemyPlayerMap[x][y] = 2;</span>
+<span class="fc" id="L120">    }</span>
+
+    /**
+     * Updates the regular map to a new tracking system for moving entities, and set the enemyPlayerMap
+     * Player is denoted with 1, enemy is denoted with 2.
+     */
+    public void update(){
+        // Copy the regular map to a new tracking system for the enemy and player
+        // Set the enemyPlayerMap
+<span class="fc bfc" id="L129" title="All 2 branches covered.">        for(int i = 0; i&lt; theMap.length; i++) {</span>
+<span class="fc bfc" id="L130" title="All 2 branches covered.">            for (int j = 0; j&lt; theMap[0].length; j++) {</span>
+<span class="pc bpc" id="L131" title="1 of 4 branches missed.">                if (theMap[i][j] == 2 || theMap[i][j] == 3) {</span>
+<span class="fc" id="L132">                    enemyPlayerMap[i][j] = 0;</span>
+                }
+            }
+        }
+<span class="fc" id="L136">    }</span>
+
+    /**
+     * Gets the int 2D array that representing the game map
+     * @return the int 2D array that representing the game map
+     */
+    public int[][] getTheMap() {
+<span class="fc" id="L143">        return theMap;</span>
+    }
+
+    /**
+     * Sets the int 2D array to a new enemy map representing the positions of the enemy and player
+     * @param newMap The new game map
+     */
+    public void setTheEnemyMap(int[][] newMap) {
+<span class="fc" id="L151">        this.enemyPlayerMap = newMap;</span>
+<span class="fc" id="L152">    }</span>
+
+    /**
+     * Get the int 2D array of the map for the position of enemy and player
+     * @return the int 2D array of the map for the position of enemy and player
+     */
+<span class="fc" id="L158">    public int[][] getEnemyPlayerMap() { return enemyPlayerMap;}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

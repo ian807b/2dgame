@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>wallManager.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">fishRoad</a> &gt; <a href="index.source.html" class="el_package">com.groupNine.app</a> &gt; <span class="el_source">wallManager.java</span></div><h1>wallManager.java</h1><pre class="source lang-java linenums">package com.groupNine.app;
+
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.io.IOException;
+
+/**
+ * The purpose of wallManager class is to take care of the location of barriers according to the game map,
+ * and the collision between the wall and the player
+ * @author Alice
+ * @version 1.0
+ */
+public class wallManager {
+
+    /**
+     * The game window of the game
+     */
+    gameWindow gameWin;
+    /**
+     * Array stores all of the possible barriers on the gameMap
+     */
+    wallImage[] barriers;
+
+    /**
+     * Assigns the parameter gameWin to this gameWin,
+     * while allowing only 3 types of barriers to be placed in the game
+     * @param gameWin input the game Window of the game
+     */
+<span class="fc" id="L29">    public wallManager(gameWindow gameWin) {</span>
+<span class="fc" id="L30">        this.gameWin = gameWin;</span>
+<span class="fc" id="L31">        barriers = new wallImage[3];</span>
+<span class="fc" id="L32">        getWallImages();</span>
+<span class="fc" id="L33">    }</span>
+
+    /**
+     * This method storing the water image to index 0 of barriers array.
+     * Also, storing rock image to index 1 of barriers array and assign the collision of it to be true.
+     */
+    private void getWallImages() {
+        try {
+<span class="fc" id="L41">            barriers[0] = new wallImage();</span>
+<span class="fc" id="L42">            barriers[0].image = ImageIO.read(getClass().getResourceAsStream(&quot;/tiles/water.png&quot;));</span>
+
+<span class="fc" id="L44">            barriers[1] = new wallImage();</span>
+<span class="fc" id="L45">            barriers[1].image = ImageIO.read(getClass().getResourceAsStream(&quot;/tiles/rock.png&quot;));</span>
+<span class="fc" id="L46">            barriers[1].collision = true;</span>
+<span class="nc" id="L47">        } catch(IOException e) {</span>
+<span class="nc" id="L48">            e.printStackTrace();</span>
+<span class="fc" id="L49">        }</span>
+<span class="fc" id="L50">    }</span>
+
+    /**
+     * This method draw the water and rock on the game window according to the game map 2D array
+     * @param graphics The graphical display on the game window
+     */
+    public void draw(Graphics2D graphics) {
+<span class="nc bnc" id="L57" title="All 2 branches missed.">        for (int i = 0; i&lt;gameWin.maxScreenCol; i++) {</span>
+<span class="nc bnc" id="L58" title="All 2 branches missed.">            for (int k = 0; k&lt;gameWin.maxScreenRow; k++) {</span>
+<span class="nc bnc" id="L59" title="All 2 branches missed.">                if (gameWin.map.getTheMap()[i][k] == -1) {</span>
+<span class="nc" id="L60">                    graphics.drawImage(barriers[0].image, i*(gameWin.tileSize), k*(gameWin.tileSize), gameWin.tileSize, gameWin.tileSize, null);</span>
+<span class="nc" id="L61">                    graphics.drawImage(barriers[1].image, i*(gameWin.tileSize), k*(gameWin.tileSize), gameWin.tileSize, gameWin.tileSize, null);</span>
+                }
+                else {
+<span class="nc" id="L64">                    graphics.drawImage(barriers[0].image, i*(gameWin.tileSize), k*(gameWin.tileSize), gameWin.tileSize, gameWin.tileSize, null);</span>
+                }
+            }
+        }
+<span class="nc" id="L68">    }</span>
+
+
+
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
